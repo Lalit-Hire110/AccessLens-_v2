@@ -1,0 +1,38 @@
+DATA GAPS AND LIMITATIONS – AccessLens v2
+
+1. Application mode ambiguity
+Some schemes, such as entitlement-based health schemes, do not have a clearly defined
+national-level application process. In such cases, application_mode is left blank to reflect
+the absence of explicit enrollment procedures.
+
+2. Document count variability
+Official guidelines often list multiple document variants or allow substitutions. Document
+counts are therefore approximate and represent distinct document categories rather than
+state-specific variations.
+
+3. State-level process differences
+Several schemes are implemented by states with localized portals, forms, and verification
+procedures. National-level datasets may not capture these differences uniformly.
+
+4. Steps count uncertainty
+The number of application or verification steps is not consistently documented in official
+sources. Where step counts are included, they are conservative approximations derived from
+form structure or process descriptions.
+
+5. Assisted access heterogeneity
+While assisted access mechanisms (e.g., Anganwadi workers, CSCs, scheme facilitators) are
+acknowledged, their availability and effectiveness vary across regions and are not modeled
+quantitatively.
+
+6. Digital infrastructure variability
+Digital access barriers depend on local connectivity, device availability, and portal
+performance. These factors are represented qualitatively through personas rather than
+measured directly.
+
+7. Temporal changes
+Scheme processes, portals, and documentation requirements may change over time. The dataset
+reflects the state of information at the time of collection and is not continuously updated.
+
+8. Absence of empirical outcome data
+AccessLens v2 does not use real enrollment, rejection, or transaction data. As a result, the
+model does not validate outcomes against real-world success or failure rates.

@@ -1,0 +1,45 @@
+top 10 selected schemes to add in the AccessLens
+
+Health domain:
+Ayushman Bharat – PMJAY
+PMMVY
+Janani Suraksha Yojana (JSY)
+MJPJAY (Maharashtra)
+KASP (Kerala)
+
+Education Domain:
+National Means-cum-Merit Scholarship (NMMSS)
+Central Sector Scholarship (CSSS)
+Pre-Matric Scholarship (SC)
+Post-Matric Scholarship (SC)
+MahaDBT Fee Reimbursement (Maharashtra)
+
+To collect the required data about this or any schemes, use the following prompt with the Perplexity (Deep Research if Possible). Replace scheme name.
+
+You are a policy data extraction assistant for an academic research project.
+
+Scheme name:  SCHEME NAME 
+Country: India
+
+Use ONLY official government websites or official government PDF guidelines.
+Do NOT infer or assume anything.
+
+Extract the following fields in a structured manner:
+
+1. application_mode: online / offline / hybrid
+2. documents_required_count: integer (count distinct documents)
+3. requires_income_certificate: yes / no
+4. requires_residence_proof: yes / no
+5. digital_only: yes / no
+6. assisted_access_available: yes / no
+7. steps_count: approximate number of application steps (if unclear, estimate conservatively and say "approximate")
+8. source_type: official_site / government_pdf
+9. source_confidence: high / medium / low
+
+For EACH field:
+- State the value
+- Cite the exact source URL or PDF reference
+
+If any field is not clearly specified in official sources, write "Not specified".
+Gave me output in the table format, so that I can Directly download the csv file from here.
+Gave me output in similar format that you have just gave me.

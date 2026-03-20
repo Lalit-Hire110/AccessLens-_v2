@@ -1,0 +1,11 @@
+﻿scheme_id,scheme_name,domain,application_mode,documents_requiered_count,requires_income_certificate,requires_residence_proof,digital_only,assisted_access_available,steps_count,source_type,source_confidence
+pmjay,Ayushman Bharat -- PMJAY,health,,,0,0,0,1,,government_pdf,medium
+pmmvy,Pradhan Mantri Matru Vandana Yojana --PMMVY,health,hybrid,5,,0,0,1,6,government_pdf,high
+jsy,Janani Suraksha Yojana JSY,health,offline,,0,0,0,1,6,government_pdf,high
+mjpjay,MJPJAy Maharashtra,health,offline,,0,0,0,1,8,official_site,high
+kasp,KASP Kerala,health,,,0,0,0,1,8,government_pdf,high
+nmmss,National Means-cum-Merit Scholarship NMMSS,education,online,2,1,,0,,5,government_pdf,high
+csss,Central Sector Scholarship CSSS,education,online,4,1,,0,,7,government_pdf,high
+permatricsc,Pre-Matric Schorlarship SC,education,online,,1,,0,,,official_site,high
+postmatricsc,Post-Matric Scholarship SC,education,online,,1,0,0,,,official_site,high
+mahadbt,MahaDBT Fee Reimbursement Maharashtra,education,online,4,1,1,0,,7,official_site,high

@@ -1,0 +1,399 @@
+Ayushman Bharat – PMJAY Application Data Extraction
+Limited official national government sources explicitly detail all requested fields for the scheme's beneficiary enrollment or application process. The scheme is primarily entitlement-based with no formal enrollment required for eligible families listed in SECC 2011, as per official guidelines; additional verification occurs at empaneled hospitals or CSCs.
+​
+
+1. application_mode
+Not specified. No official national government source clearly states online, offline, hybrid, or absence of application mode.
+​
+
+2. documents_required_count
+Not specified. Official sources mention documents for verification (e.g., Aadhaar, ration card in state contexts) but no distinct national count.
+
+3. requires_income_certificate
+No. Eligibility uses SECC 2011 deprivation criteria, not income certificates.
+
+4. requires_residence_proof
+No. No mention in official national guidelines; verification uses Aadhaar or other ID via BIS at hospitals.
+
+5. digital_only
+No. Entitlement-based scheme with offline verification support via PMAMs at hospitals.
+
+6. assisted_access_available
+Yes. Pradhan Mantri Arogya Mitra (PMAM) provides assisted access for beneficiary identification and verification at empaneled hospitals.
+​
+
+7. steps_count
+Not specified. Sources describe no enrollment process; hospital verification involves multiple steps like eligibility check and document upload, approximate 5-7, but not clearly defined nationally.
+
+8. source_type
+government_pdf. Primary reliance on official PDFs like AIIMS scheme manual and Odisha beneficiary guidelines.
+
+9. source_confidence
+medium. National guidelines confirm entitlement nature but lack explicit details on application fields; state docs provide process insights but vary.
+
+
+
+PMMVY Application Data Extraction
+Pradhan Mantri Matru Vandana Yojana (PMMVY) involves registration and claims submission using official forms, available online via the PMMVY portal or through Anganwadi/ASHA workers.
+​
+​
+
+1. application_mode
+Hybrid. Applications can be submitted online via PMMVY portal/mobile app or offline at Anganwadi centers/health facilities.
+​
+​
+
+2. documents_required_count
+Checklist includes Aadhaar Card of beneficiary, Identity Card of beneficiary (if no Aadhaar), Aadhaar Card of Husband, Identity Card of husband (if no Aadhaar), Aadhaar Enrolment slip of beneficiary, Aadhaar Enrolment slip of Husband, MCP Card, Page of Pass Book, distinct identity proofs listed (e.g., Voter ID, Ration Card).
+​
+
+3. requires_income_certificate
+Not specified. No mention of income certificate in official forms or guidelines; eligibility based on pregnancy registration and living children count.
+​
+​
+
+4. requires_residence_proof
+No. Address details required in form, but no specific residence proof document mandated.
+​
+
+5. digital_only
+No. Supports offline submission to Anganwadi Worker/ASHA/ANM with physical forms and documents.
+​
+​
+
+6. assisted_access_available
+Yes. Anganwadi Workers/ASHA workers assist in filling forms online/offline and submission.
+​
+​
+
+7. steps_count
+approximate 6. Form filling involves personal details entry, document attachment, undertakings, verification by field worker, supervisor/ANM check (conservative estimate from form structure).
+​
+
+8. source_type
+government_pdf. Official PMMVY Form 1-A and implementation guidelines from Ministry of Women and Child Development.
+​
+
+9. source_confidence
+high. Directly from official scheme form PDF on wcd.gov.in detailing exact process and requirements.
+
+
+Janani Suraksha Yojana (JSY) Data Extraction
+
+Janani Suraksha Yojana (JSY) promotes institutional deliveries through cash incentives disbursed via JSY cards completed by field workers like ASHA/ANM.
+​
+
+1. application_mode
+Offline. Process uses JSY registration card filled by ANM/ASHA/AWW/link worker and submitted physically to health centers for verification.
+​
+
+2. documents_required_count
+Not specified. Official guidelines reference "necessary certifications" or "BPL proofs/certificates from Panchayat/local bodies" where required (e.g., HPS states), but no distinct count or list provided nationally.
+​
+
+3. requires_income_certificate
+No. No mention of income certificate; BPL certification required only in HPS states via ration card or simple criterion by gram pradhan/ward member.
+​
+
+4. requires_residence_proof
+No. Referral slip from ANM determines residency for entitlement, but no specific residence proof document listed.
+​
+
+5. digital_only
+No. Entire process involves physical JSY card, referral slips, and imprest cash disbursement at health institutions.
+​
+
+6. assisted_access_available
+Yes. ASHA/AWW/link workers identify beneficiaries, assist with certifications, fill forms, escort to facilities, and facilitate payments.
+​
+
+7. steps_count
+approximate 6. Micro-birth plan outlines steps: identification/registration, filling JSY/MCH card, collecting proofs (where necessary), submission/verification, transport arrangement, payment at institution.
+​
+
+8. source_type
+government_pdf. National JSY guidelines from Ministry of Health and Family Welfare on nhm.gov.in.
+​
+
+9. source_confidence
+high. Direct from central government operational guidelines detailing beneficiary process and requirements.
+
+
+MJPJAY (Maharashtra) Data Extraction
+
+MJPJAY is a cashless health insurance scheme for eligible families verified at empaneled network hospitals using ration cards or health cards, with no prior enrollment application required.
+
+1. application_mode
+Offline. Beneficiaries approach PHC/government hospitals or network hospitals for referral and verification by Arogyamitra; process handled at facilities.
+
+2. documents_required_count
+Not specified. Requires valid Yellow/Orange ration card or RGJAY/MJPJAY health card, plus photo ID (Aadhaar, driving license, election ID, etc.) for correlation; no fixed distinct count listed.
+
+3. requires_income_certificate
+No. Eligibility via yellow/orange ration card, AAY/Annapurna card, or SECC/NFSA households; no income certificate mentioned.
+
+4. requires_residence_proof
+No. No specific residence proof required; address from ration/health card used for verification.
+​
+
+5. digital_only
+No. Physical documents checked by Arogyamitra at hospitals; e-preauth follows verification.
+​
+
+6. assisted_access_available
+Yes. Arogyamitra at PHC, district hospitals, and network hospitals facilitate registration, verification, tests, and admission.
+
+7. steps_count
+approximate 8. Steps: approach facility for referral, Arogyamitra verification/documents check, specialist consult/tests/admission, e-preauth request/review/approval, treatment, discharge docs submission, claim settlement, follow-up.
+
+8. source_type
+official_site. Official MJPJAY scheme pages on jeevandayee.gov.in detailing beneficiary process.
+
+9. source_confidence
+high. Direct from Maharashtra government MJPJAY official site describing exact access and verification procedure.
+
+
+KASP (Kerala) Data Extraction
+
+KASP is Kerala's implementation of Ayushman Bharat PM-JAY, providing Rs. 5 lakhs health cover to eligible families based on SECC 2011 deprivation criteria without requiring prior application or enrollment.
+
+1. application_mode
+Not specified. Official sources describe beneficiary identification at hospitals using Aadhaar/ration card search in SECC database, with approval process for matches; no dedicated application mode stated.
+​
+​
+
+2. documents_required_count
+Not specified. Identification uses Aadhaar, ration card, or alternative family ID; no distinct list or count for any application provided.
+​
+​
+
+3. requires_income_certificate
+No. Eligibility per SECC deprivation/occupational criteria (D1-D5,D7, auto-included); no income certificate required.
+
+4. requires_residence_proof
+No. Residency verified via SECC database and family IDs like ration card; no separate residence proof mandated.
+​
+
+5. digital_only
+No. Identification combines operator search on list, document collection (Aadhaar/ration), e-KYC, and SHA approval team review.
+​
+​
+
+6. assisted_access_available
+Yes. Operators/Pradhan Mantri Arogya Mitra at facilities perform search, link documents, and e-card printing; SHA team approves.
+​
+
+7. steps_count
+approximate 8. Steps: operator searches list by name/location/ID, collects Aadhaar/ration/family ID, confidence score, sends for SHA approval, verifier approves/rejects, scrutiny if reject, e-card print/handover.
+​
+
+8. source_type
+government_pdf. SHA-KASP service contract schedules detailing beneficiary identification on sha.kerala.gov.in.
+​
+
+9. source_confidence
+high. From official Kerala SHA tender document outlining exact identification process.
+
+
+
+National Means-cum-Merit Scholarship (NMMSS) Data Extraction
+
+NMMSS provides scholarships to meritorious students from low-income families selected via state-level exams, with applications submitted online on the National Scholarship Portal (NSP).
+​
+
+1. application_mode
+Online. Eligible students apply for fresh or renewal scholarships on the National Scholarship Portal (NSP).
+​
+
+2. documents_required_count
+Documents for institute verification: Income Certificate of Parent/Guardian issued by Competent Authority; Caste Certificate.
+​
+
+3. requires_income_certificate
+Yes. Income Certificate of Parent/Guardian required for verification (parental income ≤ ₹3,50,000 per annum).
+​
+​
+
+4. requires_residence_proof
+Not specified. No residence proof document mentioned in official guidelines or FAQ.
+​
+
+5. digital_only
+No. Online application on NSP with no upload required; physical documents submitted to institute for verification.
+​
+
+6. assisted_access_available
+Not specified. Verification by institute/school nodal officers, but no explicit assistance for application mentioned.
+​
+
+7. steps_count
+approximate 5. Steps: register on NSP, fill online form (no upload), submit to institute, institute forwards to district, district/state verifies and sends to ministry.
+​
+
+8. source_type
+government_pdf. Official guidelines and NSP FAQ from scholarships.gov.in and education.gov.in.
+​
+​
+
+9. source_confidence
+high. Direct from Ministry of Education guidelines and NSP FAQ listing process and documents.
+
+
+Central Sector Scholarship (CSSS) Data Extraction
+
+The Central Sector Scheme of Scholarship for College and University Students (CSSS), under PM-USP, is applied for online via the National Scholarship Portal (NSP) by eligible meritorious students with family income up to Rs. 4.5 lakh.
+​
+
+1. application_mode
+Online. Students apply on NSP, filling details and selecting the scheme after OTR/Aadhaar login.
+​
+
+2. documents_required_count
+For fresh: 12th Mark Sheet, Family Income Certificate, Category/Caste Certificate for reserved categories, Disability Certificate.
+​
+
+3. requires_income_certificate
+Yes. Family Income Certificate required to verify income up to Rs. 4.5 lakh per annum.
+​
+
+4. requires_residence_proof
+Not specified. No residence or domicile proof document listed in guidelines.
+​
+
+5. digital_only
+No. Online application requires uploading documents and providing physical copies to institute for verification if sought.
+​
+
+6. assisted_access_available
+Not specified. Institute Nodal Officers verify applications, but no explicit assistance for filling applications mentioned.
+​
+
+7. steps_count
+approximate 7. Steps: OTR login/registration, select domicile/Post-Matric, fill general/category/academic details, select CSSS scheme, upload documents, submit, institute verifies.
+​
+
+8. source_type
+government_pdf. Official FAQ from Department of Higher Education, Ministry of Education on scholarships.gov.in.
+​
+
+9. source_confidence
+high. Direct from MoE CSSS FAQ detailing application process, eligibility, and documents.
+
+
+Pre-Matric Scholarship (SC) Data Extraction
+
+Pre-Matric Scholarship for SC students (Component 1) targets SC students in Classes IX-X with parental income ≤ Rs. 2.50 lakh, applied via National Scholarship Portal (NSP).
+
+1. application_mode
+Online. Applications invited on NSP (scholarships.gov.in) annually in April, with initial registration there and further processing on state portals.
+
+2. documents_required_count
+Not specified. Official guidelines and site do not list a distinct count of documents; income and caste certificates implied by eligibility but not enumerated.
+
+3. requires_income_certificate
+Yes. Parent/Guardian's income certificate required as parental income must not exceed Rs. 2.50 lakh per annum.
+
+4. requires_residence_proof
+Not specified. Awarded by domicile State/UT Government; no specific residence proof document mentioned.
+​
+
+5. digital_only
+No. Applications start on NSP but details shared with States for state portal processing; physical verification possible.
+​
+
+6. assisted_access_available
+Not specified. Implemented through State Governments/UTs; no explicit assistance detailed in national guidelines.
+​
+
+7. steps_count
+Not specified. Process involves NSP registration, state portal filling, verification; no step count provided.
+​
+
+8. source_type
+official_site. Department of Social Justice & Empowerment scheme page on socialjustice.gov.in with guidelines link.
+​
+
+9. source_confidence
+high. From official ministry scheme description confirming eligibility, income ceiling, and NSP application mode.
+
+
+
+Post-Matric Scholarship (SC) Data Extraction
+
+Post-Matric Scholarship for SC students provides financial assistance for post-matric studies, awarded by State/UT Governments to domiciled SC students with parental income ≤ Rs. 2.50 lakh.
+​
+
+1. application_mode
+Online. Applications processed through National Scholarship Portal (NSP) and state portals.
+​
+
+2. documents_required_count
+Not specified. Official sources mention income certificate but no complete distinct list or count.
+
+3. requires_income_certificate
+Yes. Parents'/Guardians' income from all sources must not exceed Rs. 2.50 lakh per annum; income certificate required.
+
+4. requires_residence_proof
+No. Domicile determined by State/UT terms; no specific residence proof document listed.
+​
+
+5. digital_only
+No. Implemented by State Governments/UTs, with NSP as entry point but state-specific processing.
+​
+
+6. assisted_access_available
+Not specified. No mention of assistance in national guidelines.
+​
+
+7. steps_count
+Not specified. No steps detailed in national sources; state-implemented.
+​
+
+8. source_type
+official_site. Department of Social Justice & Empowerment scheme page on socialjustice.gov.in.
+​
+
+9. source_confidence
+high. From official ministry site confirming eligibility, income criterion, and NSP usage.
+
+
+
+MahaDBT Fee Reimbursement (Maharashtra) Data Extraction
+
+MahaDBT Fee Reimbursement refers to various schemes on mahadbt.maharashtra.gov.in for tuition/exam fee reimbursement (e.g., Rajarshi Chhatrapati Shahu Maharaj Shikshan Shulkh Shishyavrutti, Vocational Fee Reimbursement) for eligible categories like SC, OBC, EBC.
+​
+
+1. application_mode
+Online. Applications submitted via MahaDBT portal (mahadbt.maharashtra.gov.in).
+​
+​
+
+2. documents_required_count
+Distinct documents: Caste certificate, Domicile certificate of Maharashtra, College admission receipt, Caste Validity Certificate.
+​
+
+3. requires_income_certificate
+Yes. Income certificate required for schemes like Rajarshri Chhatrapati Shahu Maharaj Fee Reimbursement (family income < Rs.8 lakhs).
+
+4. requires_residence_proof
+Yes. Domicile certificate of Maharashtra State required.
+
+5. digital_only
+No. Online application with document uploads; printout submitted to college, physical copies for verification.
+​
+
+6. assisted_access_available
+Not specified. College nodal officers verify applications, but no assistance detailed on official site.
+​
+
+7. steps_count
+approximate 7. Steps: login/register on MahaDBT, select scheme, fill details/academic info, upload documents, submit, print form, submit to college for verification.
+​
+
+8. source_type
+official_site. Official scheme pages and FAQ on mahadbt.maharashtra.gov.in.
+​
+​
+
+9. source_confidence
+high. Direct from Maharashtra government MahaDBT site listing documents and process for fee reimbursement schemes.

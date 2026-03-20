@@ -1,0 +1,9 @@
+﻿barrier_id,barrier_type,affected_stage,default_severity
+aw_01,awareness,discovery,0.7
+aw_02,awareness,discovery,0.6
+doc_01,documentation,application,0.6
+doc_02,documentation,verification,0.7
+dig_01,digital,application,0.6
+dig_02,digital,application,0.5
+inst_01,institutional,verification,0.7
+inst_02,institutional,verification,0.6

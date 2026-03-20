@@ -1,0 +1,88 @@
+# Barrier Taxonomy Justification – AccessLens v2
+
+## Purpose of the Barrier Dataset
+
+The barrier taxonomy in AccessLens v2 defines a structured vocabulary for representing
+non-financial obstacles that prevent eligible individuals from successfully accessing
+government welfare schemes. This dataset does not describe specific schemes or individuals.
+Instead, it captures generic, recurring forms of access friction observed across welfare
+delivery systems.
+
+The taxonomy is designed to support simulation and counterfactual analysis by providing
+interpretable, reusable barrier definitions that can be applied consistently across multiple
+policy domains.
+
+---
+
+## Access Stages
+
+All barriers are mapped to one primary stage of the access journey:
+
+1. **Discovery**  
+   The stage at which an individual becomes aware of a scheme and understands that it may
+   be relevant to them.
+
+2. **Application**  
+   The stage involving form submission, document preparation, and interaction with digital
+   portals or physical offices.
+
+3. **Verification**  
+   The stage involving checks, approvals, validation by officials or systems, and final
+   confirmation of access.
+
+Mapping barriers to stages ensures clarity about *where* access breaks down and allows
+stage-specific interventions to be simulated.
+
+---
+
+## Barrier Types
+
+Barriers are grouped into four broad categories, supported by policy literature and
+government evaluations:
+
+### 1. Awareness Barriers
+These barriers arise when potential beneficiaries are unaware of the existence of a scheme
+or lack clarity about eligibility conditions and application procedures. Awareness gaps are
+a major contributor to exclusion, especially in decentralized or information-poor settings.
+
+### 2. Documentation Barriers
+These barriers relate to the availability, complexity, and verification of required documents.
+Even when individuals are eligible, missing or difficult-to-obtain documents can prevent
+successful application or approval.
+
+### 3. Digital Barriers
+Digital barriers capture limitations related to access to devices, internet connectivity, and
+digital literacy. As welfare delivery increasingly relies on online portals, these barriers
+have become a significant source of access friction.
+
+### 4. Institutional Barriers
+Institutional barriers arise from dependence on intermediaries, discretionary decision-making,
+administrative delays, or inconsistent implementation across offices. These barriers often
+affect the final stages of access and are difficult for individuals to predict or contest.
+
+---
+
+## Default Severity Values
+
+Each barrier is assigned a default severity value between 0 and 1. These values represent
+baseline access friction, not empirical measurements.
+
+Severity values are assigned conservatively using the following logic:
+- **0.4–0.5**: Moderate but common friction
+- **0.6–0.7**: Strong and frequently observed friction
+
+Values above 0.7 are intentionally avoided in the baseline dataset to preserve headroom for
+persona-specific amplification and scheme-specific interactions in later stages of the model.
+
+---
+
+## Ethical and Methodological Notes
+
+- Barrier definitions are generic and do not target any specific population group.
+- No personal or sensitive data is used or inferred.
+- Severity values are illustrative and explicitly documented as assumptions.
+- The taxonomy is intended to support simulation and policy reasoning, not automated
+  decision-making or eligibility determination.
+
+This design ensures transparency, interpretability, and ethical use within the AccessLens
+framework.

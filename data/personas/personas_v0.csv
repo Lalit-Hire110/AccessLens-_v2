@@ -1,0 +1,13 @@
+﻿persona_id,literacy_level,digital_access,document_completeness,institutional_dependency
+p01,high,high,high,low
+p02,high,medium,high,medium
+p03,medium,medium,medium,medium
+p04,medium,low,medium,high
+p05,low,low,low,high
+p06,high,high,medium,low
+p07,high,low,high,medium
+p08,medium,high,low,medium
+p09,low,medium,low,high
+p10,low,low,medium,high
+p11,medium,medium,high,low
+p12,high,medium,low,medium

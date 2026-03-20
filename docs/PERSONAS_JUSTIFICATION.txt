@@ -1,0 +1,75 @@
+# Synthetic Personas Justification – AccessLens v2
+
+## Purpose of the Personas Dataset
+
+The synthetic personas dataset in AccessLens v2 represents hypothetical but realistic
+access situations faced by individuals when interacting with government welfare schemes.
+These personas are not real people and do not correspond to any identifiable individual
+or group.
+
+The purpose of personas is to:
+- Illustrate how different combinations of access barriers affect outcomes
+- Enable controlled simulation of access risk
+- Test the sensitivity of schemes and barriers under diverse conditions
+
+Personas act as *inputs to the access risk model*, not as predictions of real-world behavior.
+
+---
+
+## Design Principles
+
+The personas dataset is designed using the following principles:
+
+1. **Synthetic and Non-identifiable**  
+   All personas are fictional and constructed solely for simulation purposes. No real
+   personal data is used, stored, or inferred.
+
+2. **Barrier-Oriented Design**  
+   Each persona represents a distinct configuration of exposure to awareness, digital,
+   documentation, and institutional barriers.
+
+3. **Interpretability**  
+   Attributes are expressed using coarse, human-readable categories rather than numeric
+   precision. This ensures that simulation outcomes can be easily explained to non-technical
+   audiences.
+
+4. **Coverage of Extremes and Intermediates**  
+   The dataset includes:
+   - High-access personas with minimal friction
+   - Low-access personas with multiple compounding barriers
+   - Intermediate cases that reflect common real-world situations
+
+---
+
+## Persona Attributes
+
+Each persona is described using five attributes:
+
+- **literacy_level**  
+  Indicates general reading and comprehension ability relevant to understanding scheme
+  information and forms.
+
+- **digital_access**  
+  Represents access to internet-enabled devices and ability to use digital platforms.
+
+- **document_completeness**  
+  Reflects availability and readiness of required documents at the time of application.
+
+- **institutional_dependency**  
+  Indicates reliance on intermediaries, officials, or local institutions to navigate the
+  access process.
+
+These attributes are intentionally high-level and do not encode demographic, economic,
+or sensitive characteristics.
+
+---
+
+## Ethical and Methodological Notes
+
+- Personas do not imply eligibility or entitlement.
+- Personas are not used for profiling, targeting, or automated decision-making.
+- All persona attributes are illustrative and used solely to explore access dynamics.
+- The dataset supports scenario analysis and policy reasoning, not individual assessment.
+
+This approach ensures that AccessLens v2 remains privacy-preserving, transparent, and
+ethically grounded.
