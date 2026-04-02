@@ -1,0 +1,148 @@
+Persona Mapping Function (PMF) Design Document
+1. Overview
+
+The Persona Mapping Function (PMF) is a core component of AccessLens v2.
+
+Its purpose is to map user-provided attributes to the closest matching synthetic persona, enabling the system to:
+
+preserve privacy (no storage of user data)
+maintain deterministic simulation
+standardize inputs for analysis
+2. Problem Statement
+
+Users provide real-world inputs such as:
+
+age
+income
+occupation
+location
+
+However, the simulation engine operates on predefined personas.
+
+A mechanism is required to bridge this gap.
+
+3. Objective
+
+The PMF converts raw user input into a structured persona representation by:
+
+identifying the closest matching persona
+ensuring logical consistency
+preserving system interpretability
+4. Design Principle
+
+The PMF follows:
+
+deterministic mapping (no machine learning)
+rule-based + scoring-based matching
+explainable and reproducible logic
+5. Input to PMF
+
+User inputs may include:
+
+age
+gender
+rural or urban location
+income level
+occupation
+education level
+digital access
+document availability
+6. Output of PMF
+
+The PMF outputs:
+
+matched persona_id
+similarity score (optional)
+explanation of mapping (optional for AI layer)
+7. Mapping Approach
+
+The PMF operates in two stages:
+
+Stage 1 — Filtering
+
+Filter personas based on strict conditions:
+
+rural/urban match
+occupation compatibility
+student/farmer status
+
+This reduces candidate personas.
+
+Stage 2 — Scoring
+
+Each remaining persona is scored based on similarity.
+
+Example scoring:
+
+age difference → smaller difference = higher score
+income match → exact match preferred
+education match → exact or near match
+digital access similarity
+document completeness similarity
+8. Example Scoring Logic
+
+For each persona:
+
+score =
+
+age similarity weight
+income match weight
+occupation match weight
+education match weight
+digital access match weight
+
+The persona with the highest score is selected.
+
+9. Deterministic Behavior
+
+The PMF ensures:
+
+same input always produces same output
+no randomness
+full transparency
+10. Edge Case Handling
+
+The PMF handles:
+
+missing user inputs → assign default weights
+multiple close matches → select highest score
+rare combinations → map to nearest valid persona
+11. Integration with System
+
+The PMF sits between:
+
+User Input → PMF → Persona → Simulation Engine
+
+After mapping:
+
+eligibility module uses persona attributes
+simulation engine computes access risk
+AI layer explains results
+12. Advantages
+
+The PMF provides:
+
+privacy preservation (no user data storage)
+standardized simulation inputs
+scalable architecture
+explainable mapping logic
+13. Future Enhancements
+
+Possible improvements:
+
+weighted scoring refinement
+dynamic persona clustering
+region-specific persona sets
+feedback-based tuning
+14. Conclusion
+
+The Persona Mapping Function is the core bridge between real-world user input and the simulation system.
+
+It enables AccessLens v2 to remain:
+
+deterministic
+privacy-preserving
+scalable
+interpretable
+
+while still being interactive and user-driven.
