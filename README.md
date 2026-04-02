@@ -26,6 +26,20 @@ The taxonomy defines four broad categories of recurring access friction:
 
 *Note: The model does not use real enrollment or rejection data. All default severity values and barrier mappings are structured assumptions intended for simulation and counterfactual analysis.*
 
+## Project Phases & Recent Advancements
+
+### Phase 2: Access Risk Model Extensions
+The core Access Risk Model has been expanded with advanced simulation capabilities:
+- **Batch Simulation (`batch_simulation_v1.py`)**: Runs the risk model across thousands of persona-scheme combinations to generate aggregate analytics and population-level insights.
+- **Counterfactual Simulation (`counterfactual_simulation_v1.py`)**: A "what-if" engine testing hypothetical interventions (e.g., waiving documents, adding offline agent assistance) and showing delta changes in risk scores.
+- **Visualizations (`plots_v1.py`)**: Generates detailed `matplotlib/seaborn` charts for batch simulation results.
+
+### Phase 3: Interface Layer
+The Interface Layer bridges raw user demographic data and the Access Risk Model through a unified, end-to-end pipeline:
+- **Persona Mapping Function (`persona_mapping_v1.py`)**: Translates unstructured user demographic inputs (e.g., age, income, caste, literacy) into standardized model Persona IDs.
+- **Eligibility Discovery Module (`eligibility_engine_v1.py`)**: Implements strict deterministic routing and dynamic weighted scoring to rank government schemes based on user eligibility profiles.
+- **Integration Pipeline (`pipeline_v1.py`)**: Orchestrates the entire user journey—parsing inputs, mapping personas, evaluating eligibility, computing access risk blockages, and returning actionable JSON insights.
+
 ## Requirements
 
 - Python 3.10+
@@ -36,17 +50,30 @@ Install dependencies using:
 pip install pandas
 ```
 
-## Running the Model
+## Running the Models & Pipeline
 
-The main script is located in the `phase 2 - Access Risk Model v1` directory. 
+The project is divided into distinct phases. You can run individual components from their respective directories.
 
-1. Open your terminal and navigate to the folder:
+### Running Phase 3 Integration Pipeline (Latest Workflow)
+1. Navigate to the Phase 3 folder:
+   ```bash
+   cd "phase 3 - Interface Layer"
+   ```
+2. Run the pipeline script to orchestrate demographic mapping, eligibility, and risk scoring:
+   ```bash
+   python pipeline_v1.py
+   ```
+
+### Running Phase 2 Risk Models
+1. Navigate to the Phase 2 folder:
    ```bash
    cd "phase 2 - Access Risk Model v1"
    ```
-2. Run the script:
+2. Run the core model, counterfactual, or batch simulations:
    ```bash
    python access_risk_model_v1.py
+   # Or try counterfactual simulations:
+   # python counterfactual_simulation_v1.py
    ```
 
 ### Configuration
