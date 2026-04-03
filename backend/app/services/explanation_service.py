@@ -52,7 +52,10 @@ SYSTEM_PROMPT = (
     "- Only use provided input\n"
     "- If something is uncertain, say so\n"
     "- Be simple, clear, and practical\n"
-    "- Return ONLY a valid JSON object. Do not include any conversational text before or after the JSON. Do not wrap in markdown fences."
+    "CRITICAL REQUIREMENT: You MUST return ONLY a strict JSON object. "
+    "Do NOT include any text outside the JSON. "
+    "Do NOT use markdown. "
+    "Do NOT add any explanations."
 )
 
 USER_PROMPT_TEMPLATE = (
@@ -152,7 +155,7 @@ async def generate_explanation(input_data: dict) -> dict:
     payload = {
         "model": GROQ_MODEL,
         "messages": messages,
-        "temperature": 0.2,
+        "temperature": 0.1,
         "max_tokens": 150,
     }
 
@@ -177,6 +180,8 @@ async def generate_explanation(input_data: dict) -> dict:
 
             body = response.json()
             content = body["choices"][0]["message"]["content"]
+            
+            logger.info("RAW LLM OUTPUT:\n%s", content)
 
             explanation = extract_json(content)
             logger.info("Explanation generated successfully")
