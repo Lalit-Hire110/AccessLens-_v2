@@ -99,3 +99,23 @@ For more detailed information, please see the files in the `docs/` folder:
 - `USAGE.md`: Full guide on running the script, including all available scheme and persona IDs.
 - `BARRIERS_JUSTIFICATION.txt`: Detailed breakdown of the barrier taxonomy.
 - `ASSUMPTIONS.txt`: Key data gaps, limitations, and modelling assumptions.
+
+## Deployment
+
+AccessLens v2 comprises a FastAPI backend and a Next.js frontend, both optimized for production deployment.
+
+### Backend Deployment (Render, Railway, etc.)
+1. **Environment Variables**: Set `GROQ_API_KEY` to your Groq API key to enable AI-powered explanations.
+2. **Start Command**: 
+   ```bash
+   uvicorn app.main:app --host 0.0.0.0 --port 8000
+   ```
+3. **Health Check**: Ensure the deployment health checks point to `GET /health` (`{"status": "ok"}`).
+
+### Frontend Deployment (Vercel, Netlify)
+1. **Environment Variables**: Set `NEXT_PUBLIC_API_URL` to the public URL of your deployed backend (e.g., `https://accesslens-api.onrender.com`).
+2. **Build Settings**: The Next.js repository can be connected directly to Vercel. 
+   - Framework Preset: Next.js
+   - Build Command: `npm run build`
+   - Output Directory: `.next`
+

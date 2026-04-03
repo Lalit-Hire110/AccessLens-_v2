@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+pydantic
+pandas
+openpyxl
+httpx
+pytest
+hypothesis
+python-dotenv
