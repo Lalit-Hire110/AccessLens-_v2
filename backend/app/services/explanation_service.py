@@ -11,11 +11,18 @@ RULES:
   - AI output must be structured JSON
 """
 
+import asyncio
 import json
 import logging
 import os
 
 import httpx
+
+# ---------------------------------------------------------------------------
+# Concurrency
+# ---------------------------------------------------------------------------
+
+groq_semaphore = asyncio.Semaphore(2)
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -114,7 +121,7 @@ async def generate_explanation(input_data: dict) -> dict:
         "model": GROQ_MODEL,
         "messages": messages,
         "temperature": 0.3,
-        "max_tokens": 1024,
+        "max_tokens": 150,
     }
 
     headers = {
@@ -127,12 +134,13 @@ async def generate_explanation(input_data: dict) -> dict:
     # Try up to 2 times (initial + 1 retry)
     for attempt in range(2):
         try:
-            async with httpx.AsyncClient(timeout=30.0) as client:
-                response = await client.post(
-                    GROQ_API_URL,
-                    json=payload,
-                    headers=headers,
-                )
+            async with groq_semaphore:
+                async with httpx.AsyncClient(timeout=30.0) as client:
+                    response = await client.post(
+                        GROQ_API_URL,
+                        json=payload,
+                        headers=headers,
+                    )
             response.raise_for_status()
 
             body = response.json()
@@ -152,23 +160,23 @@ async def generate_explanation(input_data: dict) -> dict:
 
         except json.JSONDecodeError:
             logger.warning("JSON parse failed (attempt %d/2) — retrying", attempt + 1)
-            if attempt < 1:
-                payload["model"] = "llama-3.1-70b-versatile"
             continue
 
         except httpx.HTTPStatusError as exc:
             logger.error("Groq API HTTP error: %s - response: %s", exc.response.status_code, exc.response.text)
+            if exc.response.status_code == 429 and attempt < 1:
+                logger.warning("Rate limit hit, waiting 8 seconds before retry...")
+                await asyncio.sleep(8)
+                continue
             if attempt < 1:
-                logger.warning("Retrying after HTTP error with fallback model (attempt %d/2)", attempt + 1)
-                payload["model"] = "llama-3.1-70b-versatile"
+                logger.warning("Retrying after HTTP error (attempt %d/2)", attempt + 1)
                 continue
             break
 
         except Exception as exc:
             logger.error("Groq API call failed: %s", exc)
             if attempt < 1:
-                logger.warning("Retrying after Exception with fallback model (attempt %d/2)", attempt + 1)
-                payload["model"] = "llama-3.1-70b-versatile"
+                logger.warning("Retrying after Exception (attempt %d/2)", attempt + 1)
                 continue
             break
 
@@ -196,18 +204,22 @@ async def check_groq_health() -> bool:
         current_model = payload["model"]
         logger.info("Running AI health check (model=%s) ...", current_model)
         try:
-            async with httpx.AsyncClient(timeout=10.0) as client:
-                response = await client.post(GROQ_API_URL, json=payload, headers=headers)
+            async with groq_semaphore:
+                async with httpx.AsyncClient(timeout=10.0) as client:
+                    response = await client.post(GROQ_API_URL, json=payload, headers=headers)
             response.raise_for_status()
             logger.info("AI health check passed (model=%s)", current_model)
             return True
         except httpx.HTTPStatusError as exc:
             logger.error("AI health check HTTP error (model=%s): %s - %s", current_model, exc.response.status_code, exc.response.text)
+            if exc.response.status_code == 429 and attempt < 1:
+                logger.warning("Rate limit hit, waiting 8 seconds before retry...")
+                await asyncio.sleep(8)
+                continue
         except Exception as exc:
             logger.error("AI health check failed (model=%s): %s", current_model, exc)
 
         if attempt < 1:
-            payload["model"] = "llama-3.1-70b-versatile"
-            logger.warning("Retrying health check with fallback model...")
+            logger.warning("Retrying health check...")
 
     return False
