@@ -174,3 +174,40 @@ async def generate_explanation(input_data: dict) -> dict:
 
     logger.warning("All attempts failed — returning fallback")
     return FALLBACK_EXPLANATION
+
+async def check_groq_health() -> bool:
+    """Run a simple health check against the Groq API on startup."""
+    if not GROQ_API_KEY:
+        return False
+
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json",
+    }
+
+    payload = {
+        "model": GROQ_MODEL,
+        "messages": [{"role": "user", "content": "ping"}],
+        "temperature": 0.1,
+        "max_tokens": 5,
+    }
+
+    for attempt in range(2):
+        current_model = payload["model"]
+        logger.info("Running AI health check (model=%s) ...", current_model)
+        try:
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                response = await client.post(GROQ_API_URL, json=payload, headers=headers)
+            response.raise_for_status()
+            logger.info("AI health check passed (model=%s)", current_model)
+            return True
+        except httpx.HTTPStatusError as exc:
+            logger.error("AI health check HTTP error (model=%s): %s - %s", current_model, exc.response.status_code, exc.response.text)
+        except Exception as exc:
+            logger.error("AI health check failed (model=%s): %s", current_model, exc)
+
+        if attempt < 1:
+            payload["model"] = "llama-3.1-70b-versatile"
+            logger.warning("Retrying health check with fallback model...")
+
+    return False

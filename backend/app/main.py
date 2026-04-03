@@ -54,3 +54,18 @@ app.include_router(health.router, tags=["Health"])
 app.include_router(predict.router, tags=["Prediction"])
 app.include_router(explain.router, tags=["Explanation"])
 app.include_router(simulate.router, tags=["Simulation"])
+
+# ---------------------------------------------------------------------------
+# Startup Validation
+# ---------------------------------------------------------------------------
+
+from app.services.explanation_service import check_groq_health
+
+@app.on_event("startup")
+async def startup_event():
+    logging.getLogger("accesslens").info("Running startup AI validation...")
+    ai_ok = await check_groq_health()
+    if ai_ok:
+        logging.getLogger("accesslens").info("AI OK")
+    else:
+        logging.getLogger("accesslens").warning("AI FALLBACK MODE")
