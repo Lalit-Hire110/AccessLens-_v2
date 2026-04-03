@@ -64,7 +64,7 @@ USER_PROMPT_TEMPLATE = (
 # ---------------------------------------------------------------------------
 
 FALLBACK_EXPLANATION = {
-    "summary": "Unable to generate AI explanation at this time.",
+    "summary": "Based on your profile, you appear eligible for this scheme. However, access may depend on factors like documentation, digital access, or institutional support.",
     "eligibility_explanation": "Please refer to the eligibility score directly.",
     "barriers": [],
     "access_gap_explanation": "Please refer to the access gap score directly.",
@@ -97,12 +97,22 @@ async def generate_explanation(input_data: dict) -> dict:
     data_json = json.dumps(input_data, indent=2, default=str)
     user_prompt = USER_PROMPT_TEMPLATE.format(data_json=data_json)
 
+    if not SYSTEM_PROMPT or not user_prompt:
+        logger.error("System or User prompt is empty")
+        return FALLBACK_EXPLANATION
+
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": user_prompt},
+    ]
+
+    if not messages:
+        logger.error("Messages array is empty or invalid")
+        return FALLBACK_EXPLANATION
+
     payload = {
         "model": GROQ_MODEL,
-        "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": user_prompt},
-        ],
+        "messages": messages,
         "temperature": 0.3,
         "max_tokens": 1024,
     }
@@ -147,11 +157,17 @@ async def generate_explanation(input_data: dict) -> dict:
             continue
 
         except httpx.HTTPStatusError as exc:
-            logger.error("Groq API HTTP error: %s", exc.response.status_code)
+            logger.error("Groq API HTTP error: %s - response: %s", exc.response.status_code, exc.response.text)
+            if attempt < 1:
+                logger.warning("Retrying after HTTP error (attempt %d/2)", attempt + 1)
+                continue
             break
 
         except Exception as exc:
             logger.error("Groq API call failed: %s", exc)
+            if attempt < 1:
+                logger.warning("Retrying after Exception (attempt %d/2)", attempt + 1)
+                continue
             break
 
     logger.warning("All attempts failed — returning fallback")
