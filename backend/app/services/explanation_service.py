@@ -52,6 +52,8 @@ SYSTEM_PROMPT = (
     "- Only use provided input\n"
     "- If something is uncertain, say so\n"
     "- Be simple, clear, and practical\n"
+    "- Keep responses concise\n"
+    "- Each field 1-2 sentences\n"
     "CRITICAL REQUIREMENT: You MUST return ONLY a strict JSON object. "
     "Do NOT include any text outside the JSON. "
     "Do NOT use markdown. "
@@ -85,6 +87,13 @@ FALLBACK_EXPLANATION = {
 # ---------------------------------------------------------------------------
 # Core function
 # ---------------------------------------------------------------------------
+
+def fix_incomplete_json(text: str) -> str:
+    if text.count('"') % 2 != 0:
+        text += '"'
+    if not text.strip().endswith("}"):
+        text += "}"
+    return text
 
 def extract_json(content: str) -> dict:
     """Extract and parse JSON from a string that might contain text around it."""
@@ -156,7 +165,7 @@ async def generate_explanation(input_data: dict) -> dict:
         "model": GROQ_MODEL,
         "messages": messages,
         "temperature": 0.1,
-        "max_tokens": 150,
+        "max_tokens": 300,
     }
 
     headers = {
@@ -183,6 +192,7 @@ async def generate_explanation(input_data: dict) -> dict:
             
             logger.info("RAW LLM OUTPUT:\n%s", content)
 
+            content = fix_incomplete_json(content)
             explanation = extract_json(content)
             logger.info("Explanation generated successfully")
             return explanation
