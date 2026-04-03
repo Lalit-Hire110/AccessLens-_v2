@@ -15,6 +15,7 @@ import asyncio
 import json
 import logging
 import os
+import re
 
 import httpx
 
@@ -51,7 +52,7 @@ SYSTEM_PROMPT = (
     "- Only use provided input\n"
     "- If something is uncertain, say so\n"
     "- Be simple, clear, and practical\n"
-    "- Always respond with valid JSON only, no markdown fences"
+    "- Return ONLY a valid JSON object. Do not include any conversational text before or after the JSON. Do not wrap in markdown fences."
 )
 
 USER_PROMPT_TEMPLATE = (
@@ -81,6 +82,37 @@ FALLBACK_EXPLANATION = {
 # ---------------------------------------------------------------------------
 # Core function
 # ---------------------------------------------------------------------------
+
+def extract_json(content: str) -> dict:
+    """Extract and parse JSON from a string that might contain text around it."""
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        pass
+    
+    cleaned = content.strip()
+    if cleaned.startswith("```"):
+        parts = cleaned.split("\n", 1)
+        if len(parts) > 1:
+            cleaned = parts[1]
+    if cleaned.endswith("```"):
+        cleaned = cleaned.rsplit("```", 1)[0]
+    cleaned = cleaned.strip()
+
+    try:
+        return json.loads(cleaned)
+    except json.JSONDecodeError:
+        pass
+
+    match = re.search(r'\{[\s\S]*\}', cleaned)
+    if match:
+        try:
+            return json.loads(match.group(0))
+        except json.JSONDecodeError:
+            pass
+            
+    raise ValueError("Failed to extract valid JSON from response.")
+
 
 
 async def generate_explanation(input_data: dict) -> dict:
@@ -120,7 +152,7 @@ async def generate_explanation(input_data: dict) -> dict:
     payload = {
         "model": GROQ_MODEL,
         "messages": messages,
-        "temperature": 0.3,
+        "temperature": 0.2,
         "max_tokens": 150,
     }
 
@@ -146,20 +178,12 @@ async def generate_explanation(input_data: dict) -> dict:
             body = response.json()
             content = body["choices"][0]["message"]["content"]
 
-            # Strip markdown fences if the model wraps them
-            content = content.strip()
-            if content.startswith("```"):
-                content = content.split("\n", 1)[1]  # drop first line
-            if content.endswith("```"):
-                content = content.rsplit("```", 1)[0]
-            content = content.strip()
-
-            explanation = json.loads(content)
+            explanation = extract_json(content)
             logger.info("Explanation generated successfully")
             return explanation
 
-        except json.JSONDecodeError:
-            logger.warning("JSON parse failed (attempt %d/2) — retrying", attempt + 1)
+        except (json.JSONDecodeError, ValueError):
+            logger.warning("JSON parse/extraction failed (attempt %d/2) — retrying", attempt + 1)
             continue
 
         except httpx.HTTPStatusError as exc:
