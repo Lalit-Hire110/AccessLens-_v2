@@ -41,6 +41,7 @@ for _p in (_SCRIPT_DIR, _PHASE2_DIR):
 from persona_mapping_v1 import map_persona, load_personas
 from eligibility_engine_v1 import load_schemes, rank_schemes
 from access_risk_model_v1 import compute_access_risk_score
+from reasoning_signals import extract_eligibility_factors, extract_risk_factors, build_input_snapshot
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -209,6 +210,10 @@ def run_accesslens_pipeline(
         # Insight
         insight = _generate_insight(eligibility_label, risk_score)
 
+        eligibility_factors = extract_eligibility_factors(user_input, scheme_row)
+        risk_factors = extract_risk_factors(user_input)
+        input_snapshot = build_input_snapshot(user_input)
+
         recommendations.append({
             "scheme_id": scheme_id,
             "scheme_name": scheme_entry["scheme_name"],
@@ -217,6 +222,9 @@ def run_accesslens_pipeline(
             "risk_score": risk_score,
             "access_gap": access_gap,
             "insight": insight,
+            "eligibility_factors": eligibility_factors,
+            "risk_factors": risk_factors,
+            "input_snapshot": input_snapshot,
         })
 
     # ------------------------------------------------------------------

@@ -44,29 +44,51 @@ GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.1-8b-instant")
 # ---------------------------------------------------------------------------
 
 SYSTEM_PROMPT = (
-    "You are an explanation engine for a policy access system.\n"
-    "You must explain structured results clearly and faithfully.\n\n"
-    "Rules:\n"
-    "- Do not invent facts\n"
-    "- Do not assume missing data\n"
-    "- Only use provided input\n"
-    "CRITICAL REQUIREMENT: You MUST return ONLY a strict JSON object.\n"
-    "Do NOT include any text outside the JSON.\n"
-    "Do NOT use markdown.\n"
-    "Do NOT add any explanations outside the JSON fields.\n"
-    "Each JSON field must be MAX 1 sentence.\n"
-    "The 'barriers' array must have max 2 items.\n"
-    "The 'next_steps' array must have max 2 items."
+    "You are an explanation engine for a deterministic policy system called AccessLens.\n\n"
+    "STRICT RULES:\n"
+    "- Use ONLY the provided data\n"
+    "- DO NOT assume anything not present\n"
+    "- DO NOT add new reasons\n"
+    "- DO NOT generalize\n"
+    "- If a factor is not listed, DO NOT mention it\n"
+    "- Be precise and grounded in numbers and factors\n\n"
+    "TASK:\n"
+    "Convert structured system output into a clear, human explanation.\n\n"
+    "OUTPUT FORMAT (STRICT JSON):\n"
+    "{\n"
+    '  "summary": "",\n'
+    '  "eligibility_explanation": "",\n'
+    '  "risk_explanation": "",\n'
+    '  "access_gap_explanation": "",\n'
+    '  "key_barriers": [],\n'
+    '  "improvement_suggestions": []\n'
+    "}\n\n"
+    "GUIDELINES:\n"
+    "1. SUMMARY:\n"
+    "- Mention scheme name\n"
+    "- Mention eligibility_score, risk_score, access_gap\n\n"
+    "2. ELIGIBILITY:\n"
+    "- ONLY use eligibility_factors (these are provided as structured objects)\n"
+    "- Tie to input_snapshot values\n\n"
+    "3. RISK:\n"
+    "- ONLY use risk_factors (these are provided as structured objects)\n"
+    "- Explain why risk is high/low using inputs\n\n"
+    "4. ACCESS GAP:\n"
+    "- Explain relationship between eligibility and risk\n\n"
+    "5. KEY BARRIERS:\n"
+    "- Directly derived from risk_factors\n\n"
+    "6. IMPROVEMENTS:\n"
+    "- Suggest fixes ONLY based on risk_factors\n"
+    '- Example: "missing_documents" -> "Complete required documents"\n\n'
+    "STYLE:\n"
+    "- Direct, simple, no fluff\n"
+    '- No words like "may", "could", "generally"\n'
+    'CRITICAL REQUIREMENT: You MUST return ONLY a strict JSON object. Do not format with markdown.'
 )
 
 USER_PROMPT_TEMPLATE = (
-    "Explain the following result:\n\n"
-    "DATA:\n{data_json}\n\n"
-    "Output in JSON with exactly these fields:\n"
-    '- "summary": "plain-language summary"\n'
-    '- "barriers": ["barrier 1", "barrier 2"]\n'
-    '- "next_steps": ["step 1", "step 2"]\n\n'
-    "Keep language simple and grounded. Return ONLY valid JSON."
+    "INPUT DATA:\n{data_json}\n\n"
+    "Output in STRICT JSON format."
 )
 
 # ---------------------------------------------------------------------------
@@ -74,9 +96,12 @@ USER_PROMPT_TEMPLATE = (
 # ---------------------------------------------------------------------------
 
 FALLBACK_EXPLANATION = {
-    "summary": "Based on your profile, you appear eligible for this scheme. However, access may depend on factors like documentation, digital access, or institutional support.",
-    "barriers": [],
-    "next_steps": ["Review the scheme details manually."],
+    "summary": "Based on your numeric profile, you appear eligible for this scheme, but face potential access barriers.",
+    "eligibility_explanation": "You meet the basic demographic criteria for this scheme.",
+    "risk_explanation": "Some application dimensions require additional effort to fulfill.",
+    "access_gap_explanation": "Your high eligibility is somewhat offset by actionable application risks.",
+    "key_barriers": ["Unverified barriers"],
+    "improvement_suggestions": ["Review scheme requirements manually"],
 }
 
 # ---------------------------------------------------------------------------

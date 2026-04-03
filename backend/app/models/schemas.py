@@ -40,6 +40,17 @@ class UserInput(BaseModel):
 # ---------------------------------------------------------------------------
 
 
+class EligibilityFactor(BaseModel):
+    factor: str
+    value: Union[str, float, int]
+    threshold: Union[str, float, int]
+
+
+class RiskFactor(BaseModel):
+    factor: str
+    value: Union[str, float, int]
+
+
 class SchemeResult(BaseModel):
     """A single scheme recommendation."""
 
@@ -50,6 +61,9 @@ class SchemeResult(BaseModel):
     risk_score: float
     access_gap: float
     insight: Optional[str] = None
+    eligibility_factors: list[EligibilityFactor] = []
+    risk_factors: list[RiskFactor] = []
+    input_snapshot: dict = {}
 
 
 class PredictionResponse(BaseModel):
@@ -64,44 +78,25 @@ class PredictionResponse(BaseModel):
 # ---------------------------------------------------------------------------
 
 
-class PersonaSummary(BaseModel):
-    """Condensed persona fields relevant for explanation."""
-
-    age: int
-    occupation: str
-    income_level: str
-    digital_access: str
-    document_completeness: Union[float, str]
-
-
-class SchemeSummary(BaseModel):
-    scheme_name: str
-
-
-class EligibilitySummary(BaseModel):
-    score: float
-    label: str
-
-
-class RiskSummary(BaseModel):
-    score: float
-    label: str
-
-
 class ExplanationInput(BaseModel):
     """Input for the /explain endpoint."""
 
-    persona_summary: PersonaSummary
-    scheme: SchemeSummary
-    eligibility: EligibilitySummary
-    risk: RiskSummary
+    scheme_name: str
+    eligibility_score: float
+    risk_score: float
     access_gap: float
+    eligibility_factors: list[EligibilityFactor] = []
+    risk_factors: list[RiskFactor] = []
+    input_snapshot: dict = {}
 
 
 class ExplanationResponse(BaseModel):
     """Structured AI-generated explanation."""
 
     summary: str
-    barriers: list[str] = []
-    next_steps: list[str] = []
+    eligibility_explanation: str
+    risk_explanation: str
+    access_gap_explanation: str
+    key_barriers: list[str] = []
+    improvement_suggestions: list[str] = []
 
