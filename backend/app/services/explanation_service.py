@@ -29,7 +29,7 @@ logger = logging.getLogger("accesslens.explanation")
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama3-8b-8192")
+GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.1-8b-instant")
 
 # ---------------------------------------------------------------------------
 # Prompts
@@ -151,22 +151,24 @@ async def generate_explanation(input_data: dict) -> dict:
             return explanation
 
         except json.JSONDecodeError:
-            logger.warning(
-                "JSON parse failed (attempt %d/2) — retrying", attempt + 1
-            )
+            logger.warning("JSON parse failed (attempt %d/2) — retrying", attempt + 1)
+            if attempt < 1:
+                payload["model"] = "llama-3.1-70b-versatile"
             continue
 
         except httpx.HTTPStatusError as exc:
             logger.error("Groq API HTTP error: %s - response: %s", exc.response.status_code, exc.response.text)
             if attempt < 1:
-                logger.warning("Retrying after HTTP error (attempt %d/2)", attempt + 1)
+                logger.warning("Retrying after HTTP error with fallback model (attempt %d/2)", attempt + 1)
+                payload["model"] = "llama-3.1-70b-versatile"
                 continue
             break
 
         except Exception as exc:
             logger.error("Groq API call failed: %s", exc)
             if attempt < 1:
-                logger.warning("Retrying after Exception (attempt %d/2)", attempt + 1)
+                logger.warning("Retrying after Exception with fallback model (attempt %d/2)", attempt + 1)
+                payload["model"] = "llama-3.1-70b-versatile"
                 continue
             break
 
