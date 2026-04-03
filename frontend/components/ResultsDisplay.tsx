@@ -63,14 +63,6 @@ function ExplanationSection({ exp }: { exp: ExplanationResponse }) {
       {/* Expanded details */}
       {isExpanded && (
         <div className="mt-4 space-y-4 text-sm text-gray-300">
-          {/* Why you qualify */}
-          <div>
-            <h4 className="mb-1.5 font-semibold text-gray-200">
-              Why You Qualify
-            </h4>
-            <p className="leading-relaxed">{exp.eligibility_explanation}</p>
-          </div>
-
           {/* Barriers - Enhanced styling */}
           <div>
             <h4 className="mb-1.5 font-semibold text-gray-200">
@@ -88,14 +80,6 @@ function ExplanationSection({ exp }: { exp: ExplanationResponse }) {
             ) : (
               <p className="text-green-400">✓ No major barriers identified</p>
             )}
-          </div>
-
-          {/* Access gap explanation */}
-          <div>
-            <h4 className="mb-1.5 font-semibold text-gray-200">
-              Access Gap Explanation
-            </h4>
-            <p className="leading-relaxed">{exp.access_gap_explanation}</p>
           </div>
 
           {/* Next steps */}

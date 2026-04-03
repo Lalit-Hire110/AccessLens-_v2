@@ -102,8 +102,6 @@ class ExplanationResponse(BaseModel):
     """Structured AI-generated explanation."""
 
     summary: str
-    eligibility_explanation: str
     barriers: list[str] = []
-    access_gap_explanation: str
     next_steps: list[str] = []
 

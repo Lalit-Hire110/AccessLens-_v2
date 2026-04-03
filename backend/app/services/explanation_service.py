@@ -50,25 +50,22 @@ SYSTEM_PROMPT = (
     "- Do not invent facts\n"
     "- Do not assume missing data\n"
     "- Only use provided input\n"
-    "- If something is uncertain, say so\n"
-    "- Be simple, clear, and practical\n"
-    "- Keep responses concise\n"
-    "- Each field 1-2 sentences\n"
-    "CRITICAL REQUIREMENT: You MUST return ONLY a strict JSON object. "
-    "Do NOT include any text outside the JSON. "
-    "Do NOT use markdown. "
-    "Do NOT add any explanations."
+    "CRITICAL REQUIREMENT: You MUST return ONLY a strict JSON object.\n"
+    "Do NOT include any text outside the JSON.\n"
+    "Do NOT use markdown.\n"
+    "Do NOT add any explanations outside the JSON fields.\n"
+    "Each JSON field must be MAX 1 sentence.\n"
+    "The 'barriers' array must have max 2 items.\n"
+    "The 'next_steps' array must have max 2 items."
 )
 
 USER_PROMPT_TEMPLATE = (
     "Explain the following result:\n\n"
     "DATA:\n{data_json}\n\n"
     "Output in JSON with exactly these fields:\n"
-    "- summary: one-sentence plain-language summary\n"
-    "- eligibility_explanation: why this eligibility score was assigned\n"
-    "- barriers: list of access barriers the user may face\n"
-    "- access_gap_explanation: what the access gap means practically\n"
-    "- next_steps: list of actionable steps the user can take\n\n"
+    '- "summary": "plain-language summary"\n'
+    '- "barriers": ["barrier 1", "barrier 2"]\n'
+    '- "next_steps": ["step 1", "step 2"]\n\n'
     "Keep language simple and grounded. Return ONLY valid JSON."
 )
 
@@ -78,22 +75,13 @@ USER_PROMPT_TEMPLATE = (
 
 FALLBACK_EXPLANATION = {
     "summary": "Based on your profile, you appear eligible for this scheme. However, access may depend on factors like documentation, digital access, or institutional support.",
-    "eligibility_explanation": "Please refer to the eligibility score directly.",
     "barriers": [],
-    "access_gap_explanation": "Please refer to the access gap score directly.",
     "next_steps": ["Review the scheme details manually."],
 }
 
 # ---------------------------------------------------------------------------
 # Core function
 # ---------------------------------------------------------------------------
-
-def fix_incomplete_json(text: str) -> str:
-    if text.count('"') % 2 != 0:
-        text += '"'
-    if not text.strip().endswith("}"):
-        text += "}"
-    return text
 
 def extract_json(content: str) -> dict:
     """Extract and parse JSON from a string that might contain text around it."""
@@ -138,8 +126,7 @@ async def generate_explanation(input_data: dict) -> dict:
     Returns
     -------
     dict
-        Structured explanation with keys: summary, eligibility_explanation,
-        barriers, access_gap_explanation, next_steps.
+        Structured explanation with keys: summary, barriers, next_steps.
     """
     if not GROQ_API_KEY:
         logger.warning("GROQ_API_KEY not set — returning fallback")
@@ -165,7 +152,7 @@ async def generate_explanation(input_data: dict) -> dict:
         "model": GROQ_MODEL,
         "messages": messages,
         "temperature": 0.1,
-        "max_tokens": 300,
+        "max_tokens": 200,
     }
 
     headers = {
@@ -192,7 +179,6 @@ async def generate_explanation(input_data: dict) -> dict:
             
             logger.info("RAW LLM OUTPUT:\n%s", content)
 
-            content = fix_incomplete_json(content)
             explanation = extract_json(content)
             logger.info("Explanation generated successfully")
             return explanation

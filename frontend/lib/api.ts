@@ -59,9 +59,7 @@ export interface ExplanationInput {
 
 export interface ExplanationResponse {
   summary: string;
-  eligibility_explanation: string;
   barriers: string[];
-  access_gap_explanation: string;
   next_steps: string[];
 }
 
