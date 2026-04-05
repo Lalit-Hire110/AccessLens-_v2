@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import type { UserInput } from "@/lib/api";
+import { hoverButton } from "@/lib/motion";
 
 // ---------------------------------------------------------------------------
 // Select options
@@ -35,17 +37,15 @@ const DEFAULT_FORM: UserInput = {
   digital_access: "full",
   document_completeness: 0.75,
   institutional_dependency: "low",
-  top_k: 5,
 };
 
 // ---------------------------------------------------------------------------
 // Styles
 // ---------------------------------------------------------------------------
 
-const inputClass =
-  "w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-gray-100 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500";
+const inputClass = "input";
 
-const labelClass = "text-sm font-medium text-gray-300";
+const labelClass = "text-sm font-medium text-content-secondary mb-1.5 block";
 
 // ---------------------------------------------------------------------------
 // Component
@@ -54,10 +54,11 @@ const labelClass = "text-sm font-medium text-gray-300";
 interface Props {
   onSubmit: (data: UserInput) => void;
   loading: boolean;
+  initialValues?: UserInput;
 }
 
-export default function UserForm({ onSubmit, loading }: Props) {
-  const [form, setForm] = useState<UserInput>(DEFAULT_FORM);
+export default function UserForm({ onSubmit, loading, initialValues }: Props) {
+  const [form, setForm] = useState<UserInput>(initialValues ?? DEFAULT_FORM);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -80,7 +81,7 @@ export default function UserForm({ onSubmit, loading }: Props) {
     options: string[]
   ) {
     return (
-      <div className="flex flex-col gap-1">
+      <div key={name} className="flex flex-col">
         <label htmlFor={name} className={labelClass}>
           {label}
         </label>
@@ -104,18 +105,16 @@ export default function UserForm({ onSubmit, loading }: Props) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-gray-700 bg-gray-900 p-6 shadow-lg"
+      className="card p-6 space-y-6"
     >
-      <h2 className="mb-5 text-lg font-semibold text-gray-100">
+      <h2 className="text-xl font-semibold text-content-primary">
         User Profile
       </h2>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {/* Age */}
-        <div className="flex flex-col gap-1">
-          <label htmlFor="age" className={labelClass}>
-            Age
-          </label>
+        <div className="flex flex-col">
+          <label htmlFor="age" className={labelClass}>Age</label>
           <input
             id="age"
             name="age"
@@ -136,7 +135,7 @@ export default function UserForm({ onSubmit, loading }: Props) {
         {renderSelect("Digital Access", "digital_access", DIGITAL_OPTIONS)}
 
         {/* Document Completeness */}
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col">
           <label htmlFor="document_completeness" className={labelClass}>
             Doc. Completeness (0–1)
           </label>
@@ -158,32 +157,26 @@ export default function UserForm({ onSubmit, loading }: Props) {
           "institutional_dependency",
           INSTITUTIONAL_OPTIONS
         )}
-
-        {/* Top K */}
-        <div className="flex flex-col gap-1">
-          <label htmlFor="top_k" className={labelClass}>
-            Top K Results
-          </label>
-          <input
-            id="top_k"
-            name="top_k"
-            type="number"
-            min={1}
-            max={50}
-            value={form.top_k ?? 5}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
       </div>
 
-      <button
+      <motion.button
         type="submit"
         disabled={loading}
-        className="mt-6 w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+        {...hoverButton}
+        className="btn btn-primary w-full sm:w-auto"
       >
-        {loading ? "Running…" : "Get Recommendations"}
-      </button>
+        {loading ? (
+          <span className="flex items-center gap-2">
+            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+            </svg>
+            Analysing…
+          </span>
+        ) : (
+          "Get Recommendations"
+        )}
+      </motion.button>
     </form>
   );
 }

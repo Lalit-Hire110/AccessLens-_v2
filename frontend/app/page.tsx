@@ -1,112 +1,137 @@
 "use client";
 
-import { useState } from "react";
-import UserForm from "@/components/UserForm";
-import ResultsDisplay from "@/components/ResultsDisplay";
-import WhatIfSimulator from "@/components/WhatIfSimulator";
-import { getPrediction, fetchAllExplanations } from "@/lib/api";
-import type {
-  UserInput,
-  PredictionResponse,
-  ExplanationResponse,
-} from "@/lib/api";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import SchemeCarousel from "@/components/SchemeCarousel";
+import {
+  pageContainer,
+  staggerContainer,
+  fadeUp,
+  fadeIn,
+  hoverLift,
+  hoverButton,
+} from "@/lib/motion";
 
-export default function Home() {
-  const [result, setResult] = useState<PredictionResponse | null>(null);
-  const [userInput, setUserInput] = useState<UserInput | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+const EXPLORE_CARDS = [
+  {
+    icon: "🔍",
+    title: "About AccessLens",
+    body: "AccessLens v2 is a policy access simulation engine that maps real-world barriers to government scheme eligibility — helping identify who gets left behind.",
+  },
+  {
+    icon: "📋",
+    title: "How to Use",
+    body: "Fill in your profile on the Input page. The system matches you to a persona, scores your eligibility and risk, and surfaces the most relevant schemes.",
+  },
+  {
+    icon: "⚙️",
+    title: "How It Works",
+    body: "A multi-layer pipeline combines persona mapping, access risk modelling, and AI-generated explanations to produce transparent, actionable recommendations.",
+  },
+];
 
-  // Explanation state — keyed by recommendation index
-  const [explanations, setExplanations] = useState<
-    Record<number, ExplanationResponse | null>
-  >({});
-  const [explanationErrors, setExplanationErrors] = useState<
-    Record<number, boolean>
-  >({});
-  const [explanationsLoading, setExplanationsLoading] = useState(false);
-
-  async function handleSubmit(data: UserInput) {
-    setLoading(true);
-    setError(null);
-    setResult(null);
-    setUserInput(null);
-    setExplanations({});
-    setExplanationErrors({});
-    setExplanationsLoading(false);
-
-    try {
-      // 1. Fetch predictions (blocking)
-      const prediction = await getPrediction(data);
-      setResult(prediction);
-      setUserInput(data); // Store user input for what-if simulator
-      setLoading(false);
-
-      // 2. Fetch explanations in the background (non-blocking)
-      if (prediction.recommendations.length > 0) {
-        setExplanationsLoading(true);
-        fetchAllExplanations(prediction.persona, prediction.recommendations)
-          .then(({ data: expData, errors: expErrors }) => {
-            setExplanations(expData);
-            setExplanationErrors(expErrors);
-          })
-          .catch(() => {
-            // Mark all as errored
-            const allErrors: Record<number, boolean> = {};
-            prediction.recommendations.forEach((_, i) => {
-              allErrors[i] = true;
-            });
-            setExplanationErrors(allErrors);
-          })
-          .finally(() => setExplanationsLoading(false));
-      }
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An unexpected error occurred"
-      );
-      setLoading(false);
-    }
-  }
-
+export default function HomePage() {
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-8 px-4 py-10">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-100">AccessLens v2</h1>
-        <p className="mt-1 text-sm text-gray-400">
-          Policy access simulation &amp; scheme recommendation system
-        </p>
-      </div>
+    <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-16 space-y-24">
 
-      {/* Form */}
-      <UserForm onSubmit={handleSubmit} loading={loading} />
+      {/* ── Hero ── */}
+      <motion.section
+        initial="hidden"
+        animate="visible"
+        variants={pageContainer}
+        className="flex flex-col items-center text-center gap-6"
+      >
+        <motion.div variants={fadeUp}>
+          <div className="inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand/10 px-4 py-1.5 text-xs font-medium text-brand-soft">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-brand" />
+            </span>
+            Policy Access Simulation
+          </div>
+        </motion.div>
 
-      {/* Error */}
-      {error && (
-        <div className="rounded-xl border border-red-800 bg-red-900/30 px-4 py-3 text-sm text-red-300">
-          <strong>Error:</strong> {error}
-        </div>
-      )}
+        <motion.h1
+          variants={fadeUp}
+          className="text-5xl font-bold tracking-tight text-content-primary sm:text-6xl lg:text-7xl"
+        >
+          Access
+          <span className="text-brand-soft">Lens</span>{" "}
+          <span className="text-content-muted">v2</span>
+        </motion.h1>
 
-      {/* Results */}
-      {result && (
-        <>
-          <ResultsDisplay
-            data={result}
-            explanations={explanations}
-            explanationErrors={explanationErrors}
-            explanationsLoading={explanationsLoading}
-          />
+        <motion.p
+          variants={fadeUp}
+          className="max-w-2xl text-lg text-content-secondary leading-relaxed"
+        >
+          Policy access simulation &amp; scheme recommendation system. Understand
+          your eligibility, identify barriers, and find the schemes that matter
+          to you.
+        </motion.p>
 
-          {/* What-If Simulator */}
-          {userInput && (
-            <WhatIfSimulator
-              baseInput={userInput}
-              baselineRecommendations={result.recommendations}
-            />
-          )}
-        </>
-      )}
+        <motion.div variants={fadeUp}>
+          <motion.div {...hoverButton}>
+            <Link href="/input" className="btn btn-primary text-base glow-primary">
+              Get Started
+              <motion.span
+                className="inline-block"
+                animate={{ x: [0, 4, 0] }}
+                transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
+              >
+                →
+              </motion.span>
+            </Link>
+          </motion.div>
+        </motion.div>
+      </motion.section>
+
+      {/* ── Carousel Banner ── */}
+      <motion.section
+        variants={fadeIn}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-80px" }}
+        className="space-y-4"
+      >
+        <h2 className="text-2xl font-semibold text-content-primary">Featured Schemes</h2>
+        <SchemeCarousel />
+      </motion.section>
+
+      {/* ── Explore ── */}
+      <motion.section
+        variants={fadeIn}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-80px" }}
+        className="space-y-6"
+      >
+        <h2 className="text-2xl font-semibold text-content-primary">Explore</h2>
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-40px" }}
+          className="grid gap-6 sm:grid-cols-3"
+        >
+          {EXPLORE_CARDS.map((card) => (
+            <motion.div
+              key={card.title}
+              variants={fadeUp}
+              {...hoverLift}
+              className="card card-hover p-6 group cursor-pointer"
+            >
+              <span className="text-3xl block">{card.icon}</span>
+              <h3 className="mt-4 text-base font-semibold text-content-primary group-hover:text-white transition-colors">
+                {card.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-content-secondary group-hover:text-content-primary transition-colors">
+                {card.body}
+              </p>
+            </motion.div>
+          ))}
+        </motion.div>
+      </motion.section>
+
     </main>
   );
 }
