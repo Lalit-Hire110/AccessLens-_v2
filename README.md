@@ -1,121 +1,216 @@
-# AccessLens v2 (Access Risk Model v1)
+# AccessLens v2
 
-AccessLens v2 is a deterministic, rule-based model designed to compute a **normalized Access Risk Score** representing the relative access friction that an individual might face when applying for government welfare schemes. 
+A deterministic policy access simulation engine that computes normalised **Access Risk Scores** for (scheme, persona) pairs and surfaces actionable scheme recommendations through a full-stack web interface.
 
-This score is calculated based on a **(scheme, persona)** pair, providing insights into structural hurdles without using machine learning, real-world outcome data, or personal information.
+---
 
-## Overview
+## What it does
 
-The purpose of this project is to model non-financial access barriers across different stages of a beneficiary's journey:
-1. **Discovery**: Becoming aware of a scheme and understanding eligibility.
-2. **Application**: Gathering documents and interacting with digital/physical portals.
-3. **Verification**: Undergoing checks, approvals, and final confirmation.
+AccessLens v2 models the non-financial barriers an individual faces when applying for government welfare schemes — across three stages of the beneficiary journey:
 
-The model computes an **Access Risk Score from 0.0 to 1.0**:
-- **0.0** = Minimal access friction
-- **0.5** = Moderate friction
-- **1.0** = Very high access friction
+| Stage | Description |
+|---|---|
+| **Discovery** | Awareness of a scheme and clarity on eligibility |
+| **Application** | Document gathering, portal interaction |
+| **Verification** | Approvals, processing delays, final confirmation |
 
-## Modeled Barriers
+The model produces an **Access Risk Score** from `0.0` (minimal friction) to `1.0` (very high friction) for any (scheme, persona) combination, without using machine learning, real enrollment data, or personal information.
 
-The taxonomy defines four broad categories of recurring access friction:
-- **Awareness**: Lack of scheme awareness or clarity on eligibility.
-- **Documentation**: Missing or difficult-to-obtain documents.
-- **Digital**: Lack of device access, internet connectivity, or digital literacy.
-- **Institutional**: Dependence on intermediaries, processing delays, or process inconsistency.
+---
 
-*Note: The model does not use real enrollment or rejection data. All default severity values and barrier mappings are structured assumptions intended for simulation and counterfactual analysis.*
+## Architecture
 
-## Project Phases & Recent Advancements
+```
+AccessLens v2
+├── phase 2 - Access Risk Model v1/   # Core risk model + batch/counterfactual simulation
+├── phase 3 - Interface Layer/        # Persona mapping, eligibility engine, pipeline
+├── backend/                          # FastAPI REST API
+│   └── app/
+│       ├── api/routes/               # /predict  /explain  /simulate  /health
+│       ├── services/                 # Pipeline orchestration + Groq AI explanation
+│       └── models/schemas.py         # Pydantic request/response models
+├── frontend/                         # Next.js 13 App Router UI
+│   ├── app/                          # / (home)  /input  /results
+│   ├── components/                   # Navbar, SchemeCarousel, ErrorBoundary, etc.
+│   └── lib/                          # API client, global state, motion presets
+└── data/                             # Schemes, personas, barriers datasets
+```
 
-### Phase 2: Access Risk Model Extensions
-The core Access Risk Model has been expanded with advanced simulation capabilities:
-- **Batch Simulation (`batch_simulation_v1.py`)**: Runs the risk model across thousands of persona-scheme combinations to generate aggregate analytics and population-level insights.
-- **Counterfactual Simulation (`counterfactual_simulation_v1.py`)**: A "what-if" engine testing hypothetical interventions (e.g., waiving documents, adding offline agent assistance) and showing delta changes in risk scores.
-- **Visualizations (`plots_v1.py`)**: Generates detailed `matplotlib/seaborn` charts for batch simulation results.
+---
 
-### Phase 3: Interface Layer
-The Interface Layer bridges raw user demographic data and the Access Risk Model through a unified, end-to-end pipeline:
-- **Persona Mapping Function (`persona_mapping_v1.py`)**: Translates unstructured user demographic inputs (e.g., age, income, caste, literacy) into standardized model Persona IDs.
-- **Eligibility Discovery Module (`eligibility_engine_v1.py`)**: Implements strict deterministic routing and dynamic weighted scoring to rank government schemes based on user eligibility profiles.
-- **Integration Pipeline (`pipeline_v1.py`)**: Orchestrates the entire user journey—parsing inputs, mapping personas, evaluating eligibility, computing access risk blockages, and returning actionable JSON insights.
+## Modelled Barriers
 
-## Requirements
+Four categories of access friction:
 
-- Python 3.10+
-- `pandas` library
+- **Awareness** — lack of scheme knowledge or eligibility clarity
+- **Documentation** — missing or hard-to-obtain documents
+- **Digital** — no device, connectivity, or digital literacy
+- **Institutional** — intermediary dependence, processing delays, inconsistency
 
-Install dependencies using:
+> All severity values and barrier mappings are structured assumptions for simulation and counterfactual analysis. No real outcome data is used.
+
+---
+
+## Project Phases
+
+### Phase 2 — Access Risk Model
+
+| File | Purpose |
+|---|---|
+| `access_risk_model_v1.py` | Core risk score computation |
+| `batch_simulation_v1.py` | Population-level analytics across thousands of persona-scheme pairs |
+| `counterfactual_simulation_v1.py` | What-if engine — tests interventions and shows delta risk changes |
+| `plots_v1.py` | Matplotlib/seaborn visualisations for batch results |
+
+### Phase 3 — Interface Layer
+
+| File | Purpose |
+|---|---|
+| `persona_mapping_v1.py` | Maps raw demographic inputs to standardised Persona IDs |
+| `eligibility_engine_v1.py` | Deterministic weighted scoring to rank schemes by eligibility |
+| `pipeline_v1.py` | End-to-end orchestration: input → persona → eligibility → risk → JSON |
+
+### Phase 4 — Full-Stack Web Application (current)
+
+A production-deployed web interface built on top of the Phase 3 pipeline.
+
+**Backend (FastAPI)**
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/health` | GET | Health check |
+| `/predict` | POST | Run full pipeline — returns persona match + ranked scheme recommendations |
+| `/explain` | POST | Generate AI explanation for a single scheme result (Groq LLM) |
+| `/simulate` | POST | What-if simulation — compare baseline vs modified inputs |
+
+**Frontend (Next.js 13)**
+
+| Page | Route | Description |
+|---|---|---|
+| Home | `/` | Landing page with hero, featured scheme carousel, explore cards |
+| Input | `/input` | User profile form with quick-fill demo, tips, loading states |
+| Results | `/results` | Scheme cards with access gap badges, progress bars, AI explanations, visualisations |
+
+**Frontend features added in this phase:**
+- Multi-page App Router structure with React Context global state
+- Scheme cards with dominant access gap badge, animated progress bars, skeleton loaders
+- Per-card on-demand AI explanation (Groq, cached in-memory)
+- What-If Simulator panel (adjust document completeness / digital access)
+- Recharts bar chart visualisation of eligibility, risk, and access gap scores
+- Framer Motion animation system (`lib/motion.ts`) — consistent presets across all pages
+- Design token system (Tailwind config + CSS custom properties)
+- Global `ErrorBoundary` component — catches unhandled render errors
+- `NetworkBanner` — detects offline state and warns the user
+- API client with retry logic, per-endpoint timeouts, and production-safe logging
+
+---
+
+## Running locally
+
+### Backend
+
 ```bash
-pip install pandas
+cd backend
+pip install -r requirements.txt
+cp .env.example .env          # add your GROQ_API_KEY
+uvicorn app.main:app --reload
 ```
 
-## Running the Models & Pipeline
+The API will be available at `http://localhost:8000`.  
+Interactive docs: `http://localhost:8000/docs`
 
-The project is divided into distinct phases. You can run individual components from their respective directories.
+### Frontend
 
-### Running Phase 3 Integration Pipeline (Latest Workflow)
-1. Navigate to the Phase 3 folder:
-   ```bash
-   cd "phase 3 - Interface Layer"
-   ```
-2. Run the pipeline script to orchestrate demographic mapping, eligibility, and risk scoring:
-   ```bash
-   python pipeline_v1.py
-   ```
+```bash
+cd frontend
+npm install
+cp .env.local.example .env.local   # set NEXT_PUBLIC_API_URL=http://localhost:8000
+npm run dev
+```
 
-### Running Phase 2 Risk Models
-1. Navigate to the Phase 2 folder:
-   ```bash
-   cd "phase 2 - Access Risk Model v1"
-   ```
-2. Run the core model, counterfactual, or batch simulations:
-   ```bash
-   python access_risk_model_v1.py
-   # Or try counterfactual simulations:
-   # python counterfactual_simulation_v1.py
-   ```
+The UI will be available at `http://localhost:3000`.
 
-### Configuration
+### Phase 2 / Phase 3 scripts (standalone)
 
-You can change the target simulation directly at the bottom of the `access_risk_model_v1.py` file:
+```bash
+# Phase 3 pipeline
+cd "phase 3 - Interface Layer"
+python pipeline_v1.py
+
+# Phase 2 risk model
+cd "phase 2 - Access Risk Model v1"
+python access_risk_model_v1.py
+
+# Counterfactual simulation
+python counterfactual_simulation_v1.py
+```
+
+To change the simulation target, edit the bottom of `access_risk_model_v1.py`:
+
 ```python
-TARGET_SCHEME_ID  = "pmmvy"
-TARGET_PERSONA_ID = "p05"
+TARGET_SCHEME_ID  = "pmmvy"   # e.g. pmjay, jsy, kasp
+TARGET_PERSONA_ID = "p05"     # p01 – p12
 ```
-You can substitute these with any valid Scheme ID (e.g., `pmjay`, `jsy`, `kasp`) or Persona ID (from `p01` to `p12`) to see how access friction varies for different individuals and schemes.
 
-## Outputs
+---
 
-The script will output:
-1. A **Results Table** showing the severity, activation multiplier, and amplification factor for each individual barrier.
-2. The final **Raw Risk Score** and **Normalized Access Risk** (0.0 to 1.0).
-3. A **Checker Section** to validate activated/skipped barriers and summarize the dominant barrier types.
+## Environment variables
 
-## Documentation
+### Backend
 
-For more detailed information, please see the files in the `docs/` folder:
-- `MODEL_SPEC.md`: Complete mathematical and logical specification of the risk algorithm.
-- `USAGE.md`: Full guide on running the script, including all available scheme and persona IDs.
-- `BARRIERS_JUSTIFICATION.txt`: Detailed breakdown of the barrier taxonomy.
-- `ASSUMPTIONS.txt`: Key data gaps, limitations, and modelling assumptions.
+| Variable | Required | Description |
+|---|---|---|
+| `GROQ_API_KEY` | Yes | Groq API key for AI-powered explanations |
+| `GROQ_MODEL` | No | Model override (default: `llama-3.1-8b-instant`) |
+
+### Frontend
+
+| Variable | Required | Description |
+|---|---|---|
+| `NEXT_PUBLIC_API_URL` | Yes | Public URL of the deployed backend |
+
+---
 
 ## Deployment
 
-AccessLens v2 comprises a FastAPI backend and a Next.js frontend, both optimized for production deployment.
+### Backend — Render / Railway
 
-### Backend Deployment (Render, Railway, etc.)
-1. **Environment Variables**: Set `GROQ_API_KEY` to your Groq API key to enable AI-powered explanations.
-2. **Start Command**: 
-   ```bash
-   uvicorn app.main:app --host 0.0.0.0 --port 8000
-   ```
-3. **Health Check**: Ensure the deployment health checks point to `GET /health` (`{"status": "ok"}`).
+1. Set `GROQ_API_KEY` in environment variables.
+2. Start command: `uvicorn app.main:app --host 0.0.0.0 --port 8000`
+3. Health check path: `GET /health`
 
-### Frontend Deployment (Vercel, Netlify)
-1. **Environment Variables**: Set `NEXT_PUBLIC_API_URL` to the public URL of your deployed backend (e.g., `https://accesslens-api.onrender.com`).
-2. **Build Settings**: The Next.js repository can be connected directly to Vercel. 
-   - Framework Preset: Next.js
-   - Build Command: `npm run build`
-   - Output Directory: `.next`
+### Frontend — Vercel
 
+1. Connect the repository to Vercel.
+2. Set `NEXT_PUBLIC_API_URL` to your deployed backend URL (e.g. `https://accesslens-api.onrender.com`).
+3. Framework preset: **Next.js**
+4. Build command: `npm run build`
+5. Output directory: `.next`
+
+---
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Risk model | Python, pandas |
+| Backend | FastAPI, Pydantic, httpx, python-dotenv |
+| AI explanations | Groq (llama-3.1-8b-instant) |
+| Frontend | Next.js 13 (App Router), React 18, TypeScript |
+| Styling | Tailwind CSS v3, CSS custom properties |
+| Animations | Framer Motion |
+| Visualisations | Recharts |
+| State management | React Context |
+| Deployment | Vercel (frontend), Render (backend) |
+
+---
+
+## Documentation
+
+| File | Description |
+|---|---|
+| `docs/MODEL_SPEC.md` | Mathematical and logical specification of the risk algorithm |
+| `docs/USAGE.md` | Full guide — all scheme and persona IDs |
+| `docs/BARRIERS_JUSTIFICATION.txt` | Barrier taxonomy breakdown |
+| `docs/ASSUMPTIONS.txt` | Data gaps, limitations, and modelling assumptions |
+| `docs/DATA_POLICY.txt` | Data handling and privacy policy |
